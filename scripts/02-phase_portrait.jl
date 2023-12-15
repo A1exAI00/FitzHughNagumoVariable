@@ -15,7 +15,7 @@
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
 
-using CairoMakie
+include(srcdir("plots.jl"))
 
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
@@ -23,6 +23,7 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME = "02-phase_space_fr"
@@ -47,17 +48,8 @@ U₀ = [x₀, y₀]
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax = Axis(fig[1,1], 
-    title="Phase space",
-    xlabel="x",
-    ylabel="y",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-	xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10))
+fig = Figure(size=PLOT_RES)
+ax = beautiful_axis(fig[1,1], title="Phase space", xlabel="x", ylabel="y")
 
 record(fig, "02-phase_space.gif", eachindex(b_range); framerate=30) do i
     println(i)
@@ -67,7 +59,6 @@ record(fig, "02-phase_space.gif", eachindex(b_range); framerate=30) do i
     system_integrate!(sys, t_span)
     sol = sys.sol
 
-    #xA_, xB_, xC_, xD_ = xA(a,b), xB(a,b), xC(a,b), xD(a,b)
     xA_, xB_, xC_, xD_, yB_, yD_ = xA(a,b), xB(a,b), xC(a,b), xD(a,b), yB(a,b), yD(a,b)
 
     empty!(ax)
@@ -91,5 +82,5 @@ record(fig, "02-phase_space.gif", eachindex(b_range); framerate=30) do i
     lines!(ax, sol[1,:], sol[2,:], color=:blue)
 
     savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(lpad(i,4)).png")
-    save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+    # save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
 end
