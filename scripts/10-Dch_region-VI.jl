@@ -10,17 +10,17 @@
 
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
-
-using CairoMakie
 using Distributions: Uniform
 using Statistics: mean, std
 
+include(srcdir("plots.jl"))
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
 
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (500, 500)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME = "10-Dch_region-VI-"
@@ -92,17 +92,9 @@ end
 #########################################################################################
 
 fig = Figure(size=PLOT_RES)
-ax_Dch = Axis(fig[1,1], 
-    title="Dch; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)",
-    xlabel="c",
-    ylabel="d",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+
+# TODO refactor title, line too big
+ax_Dch = beautiful_axis(fig[1,1], title="Dch; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)", xlabel="c", ylabel="d")
 xlims!(ax_Dch, c_min, c_max)
 
 contour!(ax_Dch, c_range, d_range, diffs_k)
