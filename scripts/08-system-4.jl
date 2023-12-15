@@ -8,7 +8,7 @@
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
 
-using CairoMakie
+include(srcdir("plots.jl"))
 
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
@@ -16,6 +16,7 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (1000, 1600)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME = "08-system-4-"
@@ -67,67 +68,16 @@ T = [measure_period(sols[i][1,:], sols[i].t) for i in 1:N]
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax_x = Axis(fig[1,1], 
-    title="x(t)",
-    xlabel="t",
-    ylabel="x",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
-ax_b = Axis(fig[2,1], 
-    title="b(t)",
-    xlabel="t",
-    ylabel="b",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
-ax_k = Axis(fig[3,1], 
-    title="k(t), d=$(d)",
-    xlabel="t",
-    ylabel="k",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
-ax_T = Axis(fig[4,1], 
-    title="T(t)",
-    xlabel="t",
-    ylabel="T",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
-ax_b_n = Axis(fig[5,1], 
-    title="b(n), d=$(d)",
-    xlabel="n",
-    ylabel="b",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+fig = Figure(size=PLOT_RES)
+ax_x = beautiful_axis(fig[1,1], title="x(t)", xlabel="t", ylabel="x")
+ax_b = beautiful_axis(fig[2,1], title="b(t)", xlabel="t", ylabel="b")
+ax_k = beautiful_axis(fig[3,1], title="k(t), d=$(d)", xlabel="t", ylabel="k")
+ax_T = beautiful_axis(fig[4,1], title="T(t)", xlabel="t", ylabel="T")
+ax_b_n = Axis(fig[5,1], title="b(n), d=$(d)", xlabel="n", ylabel="b")
 
 # axis
-hlines!(ax_x, 0.0, color=:black)
-vlines!(ax_x, 0.0, color=:black)
-vlines!(ax_b, 0.0, color=:black)
+hlines!.((ax_x, ax_b, ax_k, ax_T, ax_b_n), 0.0, color=:black)
+vlines!.((ax_x, ax_b, ax_k, ax_T, ax_b_n), 0.0, color=:black)
 
 for i in 1:N
     lines!(ax_x, sols[i].t, sols[i][1,:], label="$(i)")
@@ -137,6 +87,7 @@ for i in 1:N
 end
 scatter!(ax_b_n, 1:N, k_sol[:,end])
 
+# TODO refactor
 if N < 10
     axislegend(ax_x, position=:rt)
 end
