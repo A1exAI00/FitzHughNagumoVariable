@@ -16,7 +16,7 @@
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
 
-using CairoMakie
+include(srcdir("plots.jl"))
 
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
@@ -24,6 +24,7 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME = "04-system1-"
@@ -74,18 +75,8 @@ end
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax = Axis(fig[1,1], 
-    title="T(t),",
-    xlabel="t",
-    ylabel="T",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+fig = Figure(size=PLOT_RES)
+ax = beautiful_axis(fig[1,1], title="T(t)", xlabel="t", ylabel="T")
 
 hlines!(ax, 0.0, color=:black)
 vlines!(ax, 0.0, color=:black)
@@ -94,6 +85,7 @@ for i in eachindex(b₀_range)
     lines!(ax, t_sols[i], T_s[i], label="b₀=$(b₀_range[i])")
 end
 
+# TODO refactor
 N_b₀ ≤ 10 ? axislegend(ax, position=:rt) : nothing
-# if N < 7 axislegend(ax, position=:rt) end
+
 save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
