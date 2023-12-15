@@ -15,7 +15,7 @@
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
 
-using CairoMakie
+include(srcdir("plots.jl"))
 
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
@@ -23,6 +23,7 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME = "06-k_chain-"
@@ -69,35 +70,16 @@ k_final = k_sol[:,end]
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax_k = Axis(fig[1,1], 
-    title="k(t), d=$(d)",
-    xlabel="t",
-    ylabel="k",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
-ax_k_n = Axis(fig[2,1], 
-    title="k(n)",
-    xlabel="n",
-    ylabel="k",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+fig = Figure(size=PLOT_RES)
+ax_k = beautiful_axis(fig[1,1], title="k(t), d=$(d)", xlabel="t", ylabel="k")
+ax_k_n = beautiful_axis(fig[2,1], title="k(n)", xlabel="n", ylabel="k")
 
 for i in 1:N
     lines!(ax_k, t_sol, k_sol[i,:], label="$(i)")
 end
 scatter!(ax_k_n, 1:N, k_final)
 
+# TODO refactor like in 04-system-1.jl
 if N < 10
     axislegend(ax_k, position=:rt)
 end
