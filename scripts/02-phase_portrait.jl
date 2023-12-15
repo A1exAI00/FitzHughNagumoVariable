@@ -23,11 +23,13 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
-# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME = "02-phase_space_fr"
+GIF_SAVE_PATH = plotsdir("02-phase_space.gif")
 PLOT_PX_PER_UNIT_PNG = 2
+
+FRAME_SAVE_DIR = "frames"
+FRAME_FILENAME_PREFIX = "02-phase_space_fr"
+frame_save_path(i) = plotsdir(FRAME_SAVE_DIR, FRAME_FILENAME_PREFIX*"$(lpad(i,4)).png")
 
 #########################################################################################
 
@@ -51,7 +53,7 @@ U₀ = [x₀, y₀]
 fig = Figure(size=PLOT_RES)
 ax = beautiful_axis(fig[1,1], title="Phase space", xlabel="x", ylabel="y")
 
-record(fig, "02-phase_space.gif", eachindex(b_range); framerate=30) do i
+record(fig, GIF_SAVE_PATH, eachindex(b_range); framerate=30) do i
     println(i)
 
     b = b_range[i]
@@ -81,6 +83,5 @@ record(fig, "02-phase_space.gif", eachindex(b_range); framerate=30) do i
     # График предельного цикла модели
     lines!(ax, sol[1,:], sol[2,:], color=:blue)
 
-    savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(lpad(i,4)).png")
-    # save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+    save(frame_save_path(i), fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
 end

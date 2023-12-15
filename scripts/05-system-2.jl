@@ -27,11 +27,9 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
-# TODO refactor naming and saving names
 PLOT_RES = (1000, 1600)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME = "05-system-2-"
-savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(time_ns()).png")
+PLOT_FILENAME = "05-system-2-$(time_ns()).png"
+PLOT_SAVE_PATH = plotsdir(PLOT_FILENAME)
 PLOT_PX_PER_UNIT_PNG = 2
 
 #########################################################################################
@@ -107,7 +105,6 @@ for i in 1:N
     lines!(ax_T, t_sol, T[i], label="T=$(T_final[i])")
 end
 
-# TODO refactor like in 04-system-1.jl
-axislegend(ax_x, position=:rt)
+(N ≤ 10) && axislegend(ax_x, position=:rt)
 
-save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)

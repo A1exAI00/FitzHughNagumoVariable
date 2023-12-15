@@ -19,11 +19,9 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
-# TODO refactor naming and saving names
 PLOT_RES = (600, 500)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME = "09-k_chain-VI-"
-savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(time_ns()).png")
+PLOT_FILENAME = "09-k_chain-VI-$(time_ns()).png"
+PLOT_SAVE_PATH = plotsdir(PLOT_FILENAME)
 PLOT_PX_PER_UNIT_PNG = 2
 
 #########################################################################################
@@ -80,9 +78,6 @@ for i in 1:N
 end
 scatter!(ax_k_n, 1:N, k_final)
 
-# TODO refactor
-if N < 10
-    axislegend(ax_k, position=:rt)
-end
+(N ≤ 10) && axislegend(ax_k, position=:rt)
 
-save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)

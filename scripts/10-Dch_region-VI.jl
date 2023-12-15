@@ -20,11 +20,9 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
-# TODO refactor naming and saving names
 PLOT_RES = (500, 500)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME = "10-Dch_region-VI-"
-savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(time_ns()).png")
+PLOT_FILENAME = "10-Dch_region-VI-$(time_ns()).png"
+PLOT_SAVE_PATH = plotsdir(PLOT_FILENAME)
 PLOT_PX_PER_UNIT_PNG = 2
 
 #########################################################################################
@@ -93,10 +91,10 @@ end
 
 fig = Figure(size=PLOT_RES)
 
-# TODO refactor title, line too big
-ax_Dch = beautiful_axis(fig[1,1], title="Dch; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)", xlabel="c", ylabel="d")
+plot_title = "Dch; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)"
+ax_Dch = beautiful_axis(fig[1,1], title=plot_title, xlabel="c", ylabel="d")
 xlims!(ax_Dch, c_min, c_max)
 
 contour!(ax_Dch, c_range, d_range, diffs_k)
 
-save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)

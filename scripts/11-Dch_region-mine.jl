@@ -22,9 +22,8 @@ using .FitzHughNagumoVariable
 # Настройки генерируемого графика
 # TODO refactor naming and saving names
 PLOT_RES = (500, 500)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME = "11-Dch_region-mine-"
-savingpath = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME*"$(time_ns()).png")
+PLOT_FILENAME = "11-Dch_region-mine-$(time_ns()).png"
+PLOT_SAVE_PATH = plotsdir(PLOT_FILENAME)
 PLOT_PX_PER_UNIT_PNG = 2
 
 #########################################################################################
@@ -35,8 +34,8 @@ N = 40
 μ = 1e-1
 a = 0.5
 step_time_scale = 100
-d_min, d_max, N_d = 0.0, 0.15, 100
-c_min, c_max, N_c = 1.0, 2.0, 100
+d_min, d_max, N_d = 0.0, 0.15, 10
+c_min, c_max, N_c = 1.0, 2.0, 10
 f(x,c) = (x-1)*(2-x)*(x-c)
 
 N_sims = 30
@@ -92,10 +91,10 @@ end
 
 fig = Figure(size=PLOT_RES)
 
-# TODO refactor title, line too big
-ax_Dch = Axis(fig[1,1], title="Dch, my nonlinearity; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)", xlabel="c", ylabel="d")
+plot_title = "Dch, my nonlinearity; kⱼ₀∈($(k₀_min), $(k₀_max)), Dch_metric=$(Dch_metric)"
+ax_Dch = beautiful_axis(fig[1,1], title=plot_title, xlabel="c", ylabel="d")
 xlims!(ax_Dch, c_min, c_max)
 
 contour!(ax_Dch, c_range, d_range, diffs_k)
 
-save(savingpath, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)

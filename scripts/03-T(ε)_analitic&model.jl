@@ -28,13 +28,11 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
-# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
-PLOT_SAVING_DIR = plotsdir(); println(pwd())
-PLOT_FILENAME_1 = "03-T(ε)_lin"
-PLOT_FILENAME_2 = "03-T(ε)_log"
-savingpath_1 = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME_1*"$(time_ns()).png")
-savingpath_2 = joinpath(PLOT_SAVING_DIR, PLOT_FILENAME_2*"$(time_ns()).png")
+PLOT_FILENAME_1 = "03-T(ε)_lin$(time_ns()).png"
+PLOT_FILENAME_2 = "03-T(ε)_log$(time_ns()).png"
+PLOT_SAVE_PATH_1 = plotsdir(PLOT_FILENAME_1)
+PLOT_SAVE_PATH_2 = plotsdir(PLOT_FILENAME_2)
 PLOT_PX_PER_UNIT_PNG = 2
 
 #########################################################################################
@@ -91,7 +89,7 @@ for i in eachindex(b_range)
 end
 
 axislegend(ax)
-save(savingpath_1, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH_1, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
 
 #########################################################################################
 
@@ -104,4 +102,4 @@ for i in eachindex(b_range)
 end
 
 axislegend(ax)
-save(savingpath_2, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
+save(PLOT_SAVE_PATH_2, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
