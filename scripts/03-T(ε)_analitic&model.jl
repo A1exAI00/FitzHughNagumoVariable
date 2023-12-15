@@ -20,7 +20,7 @@
 using DrWatson
 @quickactivate "FitzHughNagumoVariable"
 
-using CairoMakie
+include(srcdir("plots.jl"))
 
 include(srcdir("FitzHughNagumoVariable.jl"))
 using .FitzHughNagumoVariable
@@ -28,6 +28,7 @@ using .FitzHughNagumoVariable
 #########################################################################################
 
 # Настройки генерируемого графика
+# TODO refactor naming and saving names
 PLOT_RES = (1000, 800)
 PLOT_SAVING_DIR = plotsdir(); println(pwd())
 PLOT_FILENAME_1 = "03-T(ε)_lin"
@@ -78,18 +79,8 @@ end
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax = Axis(fig[1,1], 
-    title="T(ε), linear scale",
-    xlabel="ε",
-    ylabel="T",
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-	xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+fig = Figure(size=PLOT_RES)
+ax = beautiful_axis(fig[1,1], title="T(ε), linear scale", xlabel="ε", ylabel="T")
 
 hlines!(ax, 0.0, color=:black)
 hlines!(ax, 0.0, color=:black)
@@ -104,20 +95,8 @@ save(savingpath_1, fig, px_per_unit=PLOT_PX_PER_UNIT_PNG)
 
 #########################################################################################
 
-fig = Figure(resolution=PLOT_RES)
-ax = Axis(fig[1,1], 
-    title="T(ε), log-log scale",
-    xlabel="ε",
-    ylabel="T",
-    xscale=log10, 
-    yscale=log10, 
-    xminorticksvisible = true, 
-	xminorgridvisible = true, 
-	yminorticksvisible = true, 
-	yminorgridvisible = true, 
-    xminorticks = IntervalsBetween(10),
-	yminorticks = IntervalsBetween(10)
-)
+fig = Figure(size=PLOT_RES)
+ax = beautiful_axis(fig[1,1], title="T(ε), log-log scale", xlabel="ε", ylabel="T", is_x_log=true, is_y_log=true)
 
 for i in eachindex(b_range) 
     lines!(ax, ε_range, T_analitic[i,:], label="b=$(b_range[i])")
